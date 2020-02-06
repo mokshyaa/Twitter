@@ -1,0 +1,3 @@
+<div>
+	<b><%=link_to "#{feeds.user.name}", users_show_path(feeds.user)%> </b> ::	<%= feeds.content %> <% if current_user.id == feeds.user.id %><%=link_to 'Delete Tweet', tweet_path(id: feeds.id), method: :delete %><%end %>
+</div>

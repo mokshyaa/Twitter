@@ -1,0 +1,33 @@
+<h1>Tweeter</h1>
+
+<% unless current_user.present? %>
+	<%=link_to 'Sign Up', new_user_registration_url %>
+	<%=link_to 'Log in', new_user_session_url %>
+<% else %>
+	<h3>USERS:</h3>
+		<% @users.reject {|l| l.id == current_user.id}.each do|u| %>
+		<%=link_to "#{u.name}", users_show_path(u.id)%>
+		<% unless current_user.following(u) %>	 
+			<%= form_with  model: current_user.active_relationships.new, local: true do |f| %>
+				<%= f.hidden_field :followed_id , value: u.id%>
+			 <%= f.submit 'Follow' %>
+			<% end %>
+		<% else %>
+			<%= form_with  model: current_user.active_relationships.find_by(followed_id: u.id), local: true, html:{ method: :delete} do |f| %>
+			 <%= f.submit 'Unfollow' %>
+			<% end %>
+		<% end %>
+	<% end  if @users.present?%><br>
+
+	<%= form_with  model: current_user.tweets.new do |t| %>
+	  Content: <%= t.text_area :content %><br />
+	  <%= t.submit 'Tweet it' %>
+	<% end %><br>
+
+	<h3>Tweets:</h3>	
+	<%if @feeds.present? %>
+		<%= render :partial => 'tweets/feeds', collection: @feeds %>
+	<% end %><br>
+
+	<%=link_to 'Log out', destroy_user_session_url, :method => :delete  %>
+<% end %>
