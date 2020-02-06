@@ -1,0 +1,20 @@
+<!-- User Profile -->
+	<h2> <%= @user.name %> </h2>
+	<h3> <%= @user.email %> </h3>
+<!-- List of following users -->
+	<h3>Following: </h3>
+		<% @user.active_relationships.each do |r| %>
+			<%=link_to "#{r.followed.name}", users_show_path(r.followed.id)%><br>
+		<% end %>
+<!-- List of follower users -->
+	<h3>Followers: </h3>
+	<% @user.passive_relationships.each do |r| %>
+		<%=link_to "#{r.follower.name}", users_show_path(r.follower.id)%><br>
+	<% end %>
+<!-- List of fTweets -->
+	<h3>Feeds:</h3>	
+	<%if @feeds.present? %>
+		<%= render :partial => 'tweets/feeds', collection: @feeds %>
+	<% end %><br>
+
+	<%= link_to 'Back', root_path %>
